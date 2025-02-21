@@ -145,13 +145,13 @@ public class Webhook {
             }
         }
 
-        try{    
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("response.statusCode() = " + response.statusCode());
-            System.out.println("response.body() = " + response.body());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        // try{    
+        //     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        //     System.out.println("response.statusCode() = " + response.statusCode());
+        //     System.out.println("response.body() = " + response.body());
+        // } catch (Exception e) {
+        //     throw new RuntimeException(e);
+        // }
     }
     // public static void sendSlackMessage(String title, String text, String imageUrl) {
     //     String slackUrl1 = System.getenv("SLACK_WEBHOOK_URL1");
