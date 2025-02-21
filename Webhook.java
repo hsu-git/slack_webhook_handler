@@ -95,72 +95,105 @@ public class Webhook {
         return result;
     }
 
+    public static void sendSlackMessage(String title, String text, String imageUrl) {
+        String slackUrl1 = System.getenv("SLACK_WEBHOOK_URL1");
+        String slackUrl2 = System.getenv("SLACK_WEBHOOK_URL2");
+            String payload = """
+                        {"attachments": [{
+                            "title": "%s",
+                            "text": "%s",
+                            "image_url": "%s"
+                        }]}
+                    """.formatted(title, text, imageUrl);
+            HttpClient client = HttpClient.newHttpClient();
+            // HttpRequest request = HttpRequest.newBuilder()
+            //         .uri(URI.create(slackUrl))
+            //         .header("Content-Type", "application/json")
+            //         .POST(HttpRequest.BodyPublishers.ofString(payload))
+            //         .build();
+            // Slack Webhook 1 전송
+        if (slackUrl1 != null && !slackUrl1.isEmpty()) {
+            try {
+                HttpRequest request1 = HttpRequest.newBuilder()
+                        .uri(URI.create(slackUrl1))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(payload))
+                        .build();
+                HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
+                System.out.println("Sent to Slack 1: response.statusCode() = " + response1.statusCode());
+                System.out.println("Response: " + response1.body());
+            } catch (Exception e) {
+                System.err.println("Failed to send message to Slack 1");
+                e.printStackTrace();
+            }
+        }
+
+        // Slack Webhook 2 전송
+        if (slackUrl2 != null && !slackUrl2.isEmpty()) {
+            try {
+                HttpRequest request2 = HttpRequest.newBuilder()
+                        .uri(URI.create(slackUrl2))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(payload))
+                        .build();
+                HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
+                System.out.println("Sent to Slack 2: response.statusCode() = " + response2.statusCode());
+                System.out.println("Response: " + response2.body());
+            } catch (Exception e) {
+                System.err.println("Failed to send message to Slack 2");
+                e.printStackTrace();
+            }
+        }
+
+        try{    
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("response.statusCode() = " + response.statusCode());
+            System.out.println("response.body() = " + response.body());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     // public static void sendSlackMessage(String title, String text, String imageUrl) {
-    // String slackUrl1 = System.getenv("SLACK_WEBHOOK_URL1");
-    // String slackUrl2 = System.getenv("SLACK_WEBHOOK_URL2");
+    //     String slackUrl1 = System.getenv("SLACK_WEBHOOK_URL1");
+    //     String slackUrl2 = System.getenv("SLACK_WEBHOOK_URL2");
+
     //     String payload = """
-    //                 {"attachments": [{
-    //                     "title": "%s",
-    //                     "text": "%s",
-    //                     "image_url": "%s"
-    //                 }]}
+    //             {"attachments": [{
+    //                 "title": "%s",
+    //                 "text": "%s",
+    //                 "image_url": "%s"
+    //             }]}
     //             """.formatted(title, text, imageUrl);
+
     //     HttpClient client = HttpClient.newHttpClient();
+
+    //     // 첫 번째 Slack Webhook으로 요청 보내기
+    //     sendPostRequest(client, slackUrl1, payload);
+
+    //     // 두 번째 Slack Webhook으로 요청 보내기
+    //     sendPostRequest(client, slackUrl2, payload);
+    // }
+
+    // private static void sendPostRequest(HttpClient client, String url, String payload) {
+    //     if (url == null || url.isEmpty()) {
+    //         System.err.println("Slack Webhook URL is missing: " + url);
+    //         return;
+    //     }
+
     //     HttpRequest request = HttpRequest.newBuilder()
-    //             .uri(URI.create(slackUrl1, slackUrl2))
+    //             .uri(URI.create(url))
     //             .header("Content-Type", "application/json")
     //             .POST(HttpRequest.BodyPublishers.ofString(payload))
     //             .build();
 
-    //     try{    
+    //     try {
     //         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    //         System.out.println("Sent message to: " + url);
     //         System.out.println("response.statusCode() = " + response.statusCode());
     //         System.out.println("response.body() = " + response.body());
     //     } catch (Exception e) {
-    //         throw new RuntimeException(e);
+    //         System.err.println("Failed to send message to Slack: " + url);
+    //         e.printStackTrace();
     //     }
     // }
-    public static void sendSlackMessage(String title, String text, String imageUrl) {
-        String slackUrl1 = System.getenv("SLACK_WEBHOOK_URL1");
-        String slackUrl2 = System.getenv("SLACK_WEBHOOK_URL2");
-
-        String payload = """
-                {"attachments": [{
-                    "title": "%s",
-                    "text": "%s",
-                    "image_url": "%s"
-                }]}
-                """.formatted(title, text, imageUrl);
-
-        HttpClient client = HttpClient.newHttpClient();
-
-        // 첫 번째 Slack Webhook으로 요청 보내기
-        sendPostRequest(client, slackUrl1, payload);
-
-        // 두 번째 Slack Webhook으로 요청 보내기
-        sendPostRequest(client, slackUrl2, payload);
-    }
-
-    private static void sendPostRequest(HttpClient client, String url, String payload) {
-        if (url == null || url.isEmpty()) {
-            System.err.println("Slack Webhook URL is missing: " + url);
-            return;
-        }
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(payload))
-                .build();
-
-        try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("Sent message to: " + url);
-            System.out.println("response.statusCode() = " + response.statusCode());
-            System.out.println("response.body() = " + response.body());
-        } catch (Exception e) {
-            System.err.println("Failed to send message to Slack: " + url);
-            e.printStackTrace();
-        }
-    }
 }
