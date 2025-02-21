@@ -3,7 +3,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class Solution02 {
+public class Webhook {
     public static void main(String[] args) {
         String prompt = System.getenv("LLM_PROMPT");
         String llmResult = useLLM(prompt);
