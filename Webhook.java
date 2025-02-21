@@ -47,7 +47,7 @@ public class Webhook {
             result = response.body()
                     .split("url\": \"")[1]
                     .split("\",")[0];
-        } catch (Exception e) { 
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return result;
