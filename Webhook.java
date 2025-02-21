@@ -96,7 +96,8 @@ public class Webhook {
     }
 
     public static void sendSlackMessage(String title, String text, String imageUrl) {
-    String slackUrl = System.getenv("SLACK_WEBHOOK_URL");
+    String slackUrl1 = System.getenv("SLACK_WEBHOOK_URL1");
+    String slackUrl2 = System.getenv("SLACK_WEBHOOK_URL2");
         String payload = """
                     {"attachments": [{
                         "title": "%s",
@@ -106,7 +107,7 @@ public class Webhook {
                 """.formatted(title, text, imageUrl);
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(slackUrl))
+                .uri(URI.create(slackUrl1, slackUrl2))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(payload))
                 .build();
