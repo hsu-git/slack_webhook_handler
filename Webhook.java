@@ -39,16 +39,32 @@ public class Webhook {
                 .POST(HttpRequest.BodyPublishers.ofString(payload))
                 .build();
         String result = null;
+        // try {
+        //     HttpResponse<String> response = client.send(request,
+        //             HttpResponse.BodyHandlers.ofString());
+        //     System.out.println("response.statusCode() = " + response.statusCode());
+        //     System.out.println("response.body() = " + response.body());
+        //     result = response.body()
+        //             .split("url\": \"")[1]
+        //             .split("\",")[0];
+        // } catch (Exception e) {
+        //     throw new RuntimeException(e);
+        // }
         try {
-            HttpResponse<String> response = client.send(request,
-                    HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             System.out.println("response.statusCode() = " + response.statusCode());
             System.out.println("response.body() = " + response.body());
-            result = response.body()
-                    .split("url\": \"")[1]
-                    .split("\",")[0];
+
+            // JSON 응답이 예상된 형식인지 확인
+            if (response.body().contains("url\": \"")) {
+                result = response.body().split("url\": \"")[1].split("\",")[0];
+            } else {
+                System.err.println("Error: 'url' field not found in API response.");
+                result = "No image URL returned.";
+            }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            throw new RuntimeException("Failed to fetch image from LLM API", e);
         }
         return result;
     }
