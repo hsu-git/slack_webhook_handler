@@ -39,17 +39,6 @@ public class Webhook {
                 .POST(HttpRequest.BodyPublishers.ofString(payload))
                 .build();
         String result = null;
-        // try {
-        //     HttpResponse<String> response = client.send(request,
-        //             HttpResponse.BodyHandlers.ofString());
-        //     System.out.println("response.statusCode() = " + response.statusCode());
-        //     System.out.println("response.body() = " + response.body());
-        //     result = response.body()
-        //             .split("url\": \"")[1]
-        //             .split("\",")[0];
-        // } catch (Exception e) {
-        //     throw new RuntimeException(e);
-        // }
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             System.out.println("response.statusCode() = " + response.statusCode());
